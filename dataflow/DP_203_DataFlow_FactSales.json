@@ -1,0 +1,109 @@
+{
+	"name": "DP_203_DataFlow_FactSales",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "SalesOrderDetail_Table",
+						"type": "DatasetReference"
+					},
+					"name": "SalesOrederDetalistream"
+				},
+				{
+					"dataset": {
+						"referenceName": "SalesOrderHeader_Table",
+						"type": "DatasetReference"
+					},
+					"name": "SalesOrderHeaderstream"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "Output_FacrSaleTable",
+						"type": "DatasetReference"
+					},
+					"name": "FactSaleTable"
+				}
+			],
+			"transformations": [
+				{
+					"name": "SalesOrederDetalJoinSalesOrderHeader"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          SalesOrderID as integer,",
+				"          SalesOrderDetailID as integer,",
+				"          OrderQty as integer,",
+				"          ProductID as integer,",
+				"          UnitPrice as decimal(19,4),",
+				"          UnitPriceDiscount as decimal(19,4),",
+				"          LineTotal as decimal(38,6),",
+				"          rowguid as string,",
+				"          ModifiedDate as timestamp",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> SalesOrederDetalistream",
+				"source(output(",
+				"          SalesOrderID as integer,",
+				"          RevisionNumber as integer,",
+				"          OrderDate as timestamp,",
+				"          DueDate as timestamp,",
+				"          ShipDate as timestamp,",
+				"          Status as integer,",
+				"          OnlineOrderFlag as boolean,",
+				"          SalesOrderNumber as string,",
+				"          PurchaseOrderNumber as string,",
+				"          AccountNumber as string,",
+				"          CustomerID as integer,",
+				"          ShipToAddressID as integer,",
+				"          BillToAddressID as integer,",
+				"          ShipMethod as string,",
+				"          CreditCardApprovalCode as string,",
+				"          SubTotal as decimal(19,4),",
+				"          TaxAmt as decimal(19,4),",
+				"          Freight as decimal(19,4),",
+				"          TotalDue as decimal(19,4),",
+				"          Comment as string,",
+				"          rowguid as string,",
+				"          ModifiedDate as timestamp",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> SalesOrderHeaderstream",
+				"SalesOrederDetalistream, SalesOrderHeaderstream join(SalesOrederDetalistream@SalesOrderID == SalesOrderHeaderstream@SalesOrderID,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> SalesOrederDetalJoinSalesOrderHeader",
+				"SalesOrederDetalJoinSalesOrderHeader sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     staged: true,",
+				"     allowCopyCommand: true,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          ProductID,",
+				"          UnitPrice,",
+				"          SalesOrderID = SalesOrderHeaderstream@SalesOrderID,",
+				"          OrderDate,",
+				"          CustomerID,",
+				"          TaxAmt",
+				"     ),",
+				"     partitionBy('hash', 1)) ~> FactSaleTable"
+			]
+		}
+	}
+}

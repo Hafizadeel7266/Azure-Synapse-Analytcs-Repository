@@ -1,0 +1,38 @@
+{
+	"name": "Sink_For_CSV",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adeel-synapse-workspase-WorkspaceDefaultStorage",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"Sink_Container_Name_CSV": {
+				"type": "string"
+			},
+			"Sink_FIle_Name_CSV": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@dataset().Sink_FIle_Name_CSV",
+					"type": "Expression"
+				},
+				"fileSystem": {
+					"value": "@dataset().Sink_Container_Name_CSV",
+					"type": "Expression"
+				}
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

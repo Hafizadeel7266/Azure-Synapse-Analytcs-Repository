@@ -1,0 +1,20 @@
+{
+	"name": "Output_FacrSaleTable",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adeel-synapse-workspase-WorkspaceDefaultSqlServer",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"DBName": "SQL_Pool_DB"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlDWTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Update_FactSale"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

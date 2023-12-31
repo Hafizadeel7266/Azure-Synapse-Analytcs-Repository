@@ -1,0 +1,6 @@
+{
+	"name": "Self-Hoat-Intergration-Runtime",
+	"properties": {
+		"type": "SelfHosted"
+	}
+}

@@ -1,0 +1,13 @@
+{
+	"name": "SQL_Server_Table_Lookup",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Labtop_SQL_Server_linked_Server",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": []
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

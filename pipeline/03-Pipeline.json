@@ -1,0 +1,151 @@
+{
+	"name": "03-Pipeline",
+	"properties": {
+		"activities": [
+			{
+				"name": "Table Information",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "Script fro SQL",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"sqlReaderQuery": "select * from INFORMATION_SCHEMA.TABLES\nwhere TABLE_TYPE='base table' and TABLE_SCHEMA='dbo' and TABLE_NAME in('DimAccount','DimCurrency','DimCustomer','\nDimDate','DimEmployee','DimProduct');\n\n",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "SQL_Server_Table_Lookup",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "For Each Table",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Table Information",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Table Information').output.value",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "Copy data1",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "SqlServerSource",
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"sink": {
+									"type": "AzureSqlSink",
+									"writeBehavior": "insert",
+									"sqlWriterUseTableLock": false,
+									"tableOption": "autoCreate",
+									"disableMetricsCollection": false
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "SqlServerTable_Source",
+									"type": "DatasetReference",
+									"parameters": {
+										"Table_Name_Source": {
+											"value": "@item().Table_Name",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "AzureSqlTable_Sink",
+									"type": "DatasetReference",
+									"parameters": {
+										"Table_Name_Sink": {
+											"value": "@item().Table_Name",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"name": "Script fro SQL",
+				"type": "Script",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "Azure_SQL_Database_Demo_DB_Linked_Services",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": "\n\nIF OBJECT_ID('[dbo].[DimDate]', 'U') IS NOT NULL\n    DROP TABLE [dbo].[DimDate];\n\nIF OBJECT_ID('[dbo].[DimAccount]', 'U') IS NOT NULL\n    DROP TABLE [dbo].[DimAccount];\n\nIF OBJECT_ID('[dbo].[DimCurrency]', 'U') IS NOT NULL\n    DROP TABLE [dbo].[DimCurrency];\n\nIF OBJECT_ID('[dbo].[DimCustomer]', 'U') IS NOT NULL\n    DROP TABLE [dbo].[DimCustomer];\n\nIF OBJECT_ID('[dbo].[DimEmployee]', 'U') IS NOT NULL\n    DROP TABLE [dbo].[DimEmployee];\n"
+						}
+					],
+					"scriptBlockExecutionTimeout": "02:00:00"
+				}
+			}
+		],
+		"annotations": [],
+		"lastPublishTime": "2023-12-26T20:26:05Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
+}

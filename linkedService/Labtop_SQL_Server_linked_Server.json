@@ -1,0 +1,17 @@
+{
+	"name": "Labtop_SQL_Server_linked_Server",
+	"type": "Microsoft.Synapse/workspaces/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "SqlServer",
+		"typeProperties": {
+			"connectionString": "integrated security=True;data source=DESKTOP-RIQUQ0K\\SQLEXPRESS;initial catalog=AdventureWorksDW2022",
+			"userName": "DESKTOP-RIQUQ0K\\HP",
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiI5NWFkMmQ5Mi02Njk3LTQwNWMtYjRmOS1kNmFmMWJlYjA2ODgiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+		},
+		"connectVia": {
+			"referenceName": "Self-Hoat-Intergration-Runtime",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

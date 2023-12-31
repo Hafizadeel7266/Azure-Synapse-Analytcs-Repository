@@ -1,0 +1,34 @@
+{
+	"name": "Sink_For_Json",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adeel-synapse-workspase-WorkspaceDefaultStorage",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"Container_Name_Json": {
+				"type": "string"
+			},
+			"File_Name_json": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@dataset().File_Name_json",
+					"type": "Expression"
+				},
+				"fileSystem": {
+					"value": "@dataset().Container_Name_Json",
+					"type": "Expression"
+				}
+			}
+		},
+		"schema": {}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

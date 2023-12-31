@@ -1,0 +1,25 @@
+{
+	"name": "AzureSqlTable_Sink",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Azure_SQL_Database_Demo_DB_Linked_Services",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"Table_Name_Sink": {
+				"type": "String"
+			}
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": {
+				"value": "@dataset().Table_Name_Sink",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

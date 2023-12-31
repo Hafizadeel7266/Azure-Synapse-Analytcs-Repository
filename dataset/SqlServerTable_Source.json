@@ -1,0 +1,24 @@
+{
+	"name": "SqlServerTable_Source",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Labtop_SQL_Server_linked_Server",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"Table_Name_Source": {
+				"type": "String"
+			}
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [],
+		"typeProperties": {
+			"table": {
+				"value": "@dataset().Table_Name_Source",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}
